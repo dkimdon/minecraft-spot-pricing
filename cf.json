@@ -1,0 +1,59 @@
+[
+            {
+              "ParameterKey": "ECSAMI",
+              "ParameterValue": "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+            },
+            {
+              "ParameterKey": "ServerState",
+              "ParameterValue": "Running"
+            },
+            {
+              "ParameterKey": "InstanceType",
+              "ParameterValue": "t3.medium"
+            },
+            {
+              "ParameterKey": "SpotPrice",
+              "ParameterValue": "0.05"
+            },
+            {
+              "ParameterKey": "KeyPairName",
+              "ParameterValue": "minecraft"
+            },
+            {
+              "ParameterKey": "YourIp",
+              "ParameterValue": "76.115.126.6"
+            },
+            {
+              "ParameterKey": "HostedZoneId",
+              "ParameterValue": "Z0718047FWUPNYGUAM6K"
+            },
+            {
+              "ParameterKey": "RecordName",
+              "ParameterValue": "minecraft.kimdon.net"
+            },
+            {
+              "ParameterKey": "MinecraftImageTag",
+              "ParameterValue": "latest"
+            },
+            {
+              "ParameterKey": "AdminPlayerNames",
+              "ParameterValue": "59506,21452,Elephantey,owl_cobra"
+            },
+            {
+              "ParameterKey": "Whitelist",
+              "ParameterValue": "59506,21452,Elephantey,owl_cobra,_0kapi_,Pangolinc,C_X_T_M_N_L,LoyalTwo,LoyalXavier"
+            }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+

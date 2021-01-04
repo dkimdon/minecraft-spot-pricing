@@ -53,6 +53,7 @@ Parameters:
   MinecraftTypeTag:
     Type: String
     Description: "(Examples include SPIGOT, BUKKIT, TUINITY, etc) Refer to tag descriptions available here: https://github.com/itzg/docker-minecraft-server)"
+    Default: ''
 
   AdminPlayerNames:
     Type: String
@@ -142,6 +143,16 @@ Mappings:
       DesiredCapacity: 1
     Stopped:
       DesiredCapacity: 0
+  InstanceType:
+    t3.medium:
+      MEMORY: "3G"
+      MemoryReservation: 3072
+    t3.large:
+      MEMORY: "7G"
+      MemoryReservation: 7168
+    t3.xlarge:
+      MEMORY: "13G"
+      MemoryReservation: 13312
 
 Resources:
 
@@ -292,11 +303,13 @@ Resources:
 
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
+    UpdatePolicy:
+      AutoScalingReplacingUpdate:
+        WillReplace: true
     DependsOn:
     - MountA
     - MountB
     Properties:
-      AutoScalingGroupName: !Sub "${AWS::StackName}-asg"
       DesiredCapacity: !FindInMap [ ServerState, !Ref ServerState, DesiredCapacity ]
       LaunchConfigurationName: !Ref LaunchConfiguration
       MaxSize: !FindInMap [ ServerState, !Ref ServerState, DesiredCapacity ]
@@ -319,14 +332,6 @@ Resources:
           - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
-      Policies:
-        - PolicyName: root
-          PolicyDocument: 
-            Version: "2012-10-17"
-            Statement: 
-              - Effect: "Allow"
-                Action: "route53:*"
-                Resource: "*"
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -359,7 +364,7 @@ Resources:
         Name: minecraft
       ContainerDefinitions:      
         - Name: minecraft
-          MemoryReservation: 1024
+          MemoryReservation: !FindInMap [ InstanceType, !Ref InstanceType, MemoryReservation ]
           Image: !Sub "itzg/minecraft-server:${MinecraftImageTag}"
           PortMappings:
           - ContainerPort: 25565
@@ -372,6 +377,16 @@ Resources:
           Environment:
             - Name: "EULA"
               Value: "TRUE"
+            - Name: "VERSION"
+              Value: "SNAPSHOT"
+              #            - Name: "USE_AIKAR_FLAGS"
+              #              Value: "true"
+              #            - Name: "USE_LARGE_PAGES"
+              #              Value: "true"
+            - Name: "MEMORY"
+              Value: !FindInMap [ InstanceType, !Ref InstanceType, MEMORY ]
+            - Name: "MOTD"
+              Value: "Kimdon Minecraft Server"
             - !If
               - MinecraftTypeTagProvided
               - Name: "TYPE"
@@ -419,7 +434,7 @@ Resources:
             Statement: 
               - Effect: "Allow"
                 Action: "route53:*"
-                Resource: "*"
+                Resource: "*"  # TODO - reduce Route53 permissions
               - Effect: "Allow"
                 Action: "ec2:DescribeInstance*"
                 Resource: "*"
